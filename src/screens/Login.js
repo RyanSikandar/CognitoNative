@@ -34,6 +34,9 @@ function Login() {
                 secureTextEntry
             />
             <Button title="Login" onPress={handleLogin} />
+            
+            <Button title="Login" onPress={handleLogin} />
+
         </SafeAreaView>
     );
 }

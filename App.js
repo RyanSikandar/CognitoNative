@@ -1,7 +1,7 @@
 // In App.js in a new project
 
 import * as React from 'react';
-import { SafeAreaView, TextInput, Button } from 'react-native';
+import { SafeAreaView, TextInput, Button, Text } from 'react-native';
 import Dash from './src/screens/Dash';
 import { useState, useEffect } from 'react';
 import { Amplify, Auth } from 'aws-amplify';
@@ -26,6 +26,11 @@ function App() {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [name, setName] = useState('');
+    const [preferred_username, setPreferred_username] = useState('');
+    const [pass, setPass] = useState('');
+    const [code, setCode] = useState('');
 
 
 
@@ -38,6 +43,31 @@ function App() {
         console.log('Error logging in:', error);
       }
     };
+
+    const handleSignUp = async () => {
+      try {
+        const response = await Auth.signUp({
+          username: preferred_username,
+          password: pass,
+          attributes: {
+            email: email,
+            name: name,
+          }
+        });
+        console.log('Successfully signed up:', response);
+      } catch (error) {
+        console.log('Error signing up:', error);
+      }
+    }
+
+    const confirmSignUp = async () => {
+      try {
+        await Auth.confirmSignUp(preferred_username, code);
+        console.log('User signed up successfully!');
+      } catch (error) {
+        console.log('Error confirming sign up:', error);
+      }
+    }
 
     return (
       <SafeAreaView>
@@ -53,6 +83,46 @@ function App() {
           secureTextEntry
         />
         <Button title="Login" onPress={handleLogin} />
+        <Text style={{
+          textAlign: 'center',
+          marginTop: 10,
+        }}
+        >
+          Don't have an account?{' '}
+        </Text>
+        <Text style={{
+          textAlign: 'center',
+          marginTop: 10,
+          color: 'blue',
+
+        }}>Sign Up Below</Text>
+
+        <TextInput
+          placeholder="Username"
+          value={preferred_username}
+          onChangeText={setPreferred_username}
+        />
+        <TextInput
+          placeholder="Password"
+          value={pass}
+          onChangeText={setPass}
+          secureTextEntry
+        />
+        <TextInput
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+        />
+        <TextInput
+          placeholder="Name"
+          value={name}
+          onChangeText={setName}
+        />
+        <Button title="Sign Up" onPress={handleSignUp} />
+        <TextInput placeholder="Confirmation Code" value={code} onChangeText={setCode} />
+
+        <Button title="Confirm Sign Up" onPress={confirmSignUp} />
+
       </SafeAreaView>
     );
   }
